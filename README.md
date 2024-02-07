@@ -4,6 +4,10 @@
 
 Template for structuring your Python data science projects. It is based on [Cookie Cutter Data Science](https://drivendata.github.io/cookiecutter-data-science/).
 
+## Notes
+
+* Better to export pickle if you are using df later so date time stuff is preserved
+
 ## Data
 
 - Gyroscope data -> deg/s

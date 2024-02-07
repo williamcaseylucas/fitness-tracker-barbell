@@ -145,11 +145,11 @@ acc_df, gyro_df = read_data_from_files(files)
 
 # We don't need participant, label, category, and set to be duplicated
 data_merged = pd.concat([acc_df.iloc[:, :3], gyro_df], axis=1)
-pd.merge(
-    acc_df, gyro_df, how="outer"
-)  # Doesn't work the same, get fewer rows and lose datetime
+# pd.merge(
+#     acc_df, gyro_df, how="outer"
+# )  # Doesn't work the same, get fewer rows and lose datetime
 
-data_merged.dropna()  # removes from 69,000 to 1,000. Yikes!
+# data_merged.dropna()  # removes from 69,000 to 1,000. Yikes!
 
 data_merged.columns = [
     "acc_x",
@@ -163,6 +163,15 @@ data_merged.columns = [
     "participant",
     "set",
 ]
+
+
+# --------------------------------------------------------------
+# Resample data (frequency conversion)
+# --------------------------------------------------------------
+
+# Accelerometer:    12.500HZ
+# Gyroscope:        25.000Hz
+
 
 # data_merged[:100].resample(rule="S").mean()
 data_merged.resample(rule="200ms").mean()  # 5 measurements per second
@@ -190,14 +199,11 @@ data_resampled = pd.concat(
     [df.resample(rule="200ms").apply(sampling).dropna() for df in days]
 )
 
-# --------------------------------------------------------------
-# Resample data (frequency conversion)
-# --------------------------------------------------------------
-
-# Accelerometer:    12.500HZ
-# Gyroscope:        25.000Hz
-
+data_resampled.info()  # change set from float64 to int
+data_resampled["set"] = data_resampled["set"].astype("int")
 
 # --------------------------------------------------------------
 # Export dataset
 # --------------------------------------------------------------
+
+data_resampled.to_pickle("../../data/interim/01_data_processed.pkl")
