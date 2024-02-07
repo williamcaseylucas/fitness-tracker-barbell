@@ -1,5 +1,6 @@
 import pandas as pd
 from glob import glob
+import numpy as np
 
 # --------------------------------------------------------------
 # Read single CSV file
@@ -143,13 +144,35 @@ acc_df, gyro_df = read_data_from_files(files)
 # Merging datasets
 # --------------------------------------------------------------
 
+set1 = pd.concat([acc_df.iloc[:, :3], gyro_df], axis=1)
+set2 = pd.concat([acc_df, gyro_df.iloc[:, :3]], axis=1)
+
+set1 = set1[["set"]]
+set2 = set2[["set"]]
+
+c1 = set1.count()
+c2 = set2.count()
+
+c1 + c2
+
+merged_label = set1.combine_first(set2)
+merged_label.count()
+
 # We don't need participant, label, category, and set to be duplicated
+
+
 data_merged = pd.concat([acc_df.iloc[:, :3], gyro_df], axis=1)
+data_merged["set"] = merged_label
+
+data_merged["set"].count()  # Good!
+
+# -- Doesn't work the same, get fewer rows and lose datetime --
 # pd.merge(
 #     acc_df, gyro_df, how="outer"
-# )  # Doesn't work the same, get fewer rows and lose datetime
+# )
 
-# data_merged.dropna()  # removes from 69,000 to 1,000. Yikes!
+# -- removes from 69,000 to 1,000. Yikes! --
+# data_merged.dropna()
 
 data_merged.columns = [
     "acc_x",
@@ -164,7 +187,6 @@ data_merged.columns = [
     "set",
 ]
 
-
 # --------------------------------------------------------------
 # Resample data (frequency conversion)
 # --------------------------------------------------------------
@@ -174,7 +196,7 @@ data_merged.columns = [
 
 
 # data_merged[:100].resample(rule="S").mean()
-data_merged.resample(rule="200ms").mean()  # 5 measurements per second
+# data_merged.resample(rule="200ms").mean()  # 5 measurements per second
 
 # for categorical, grab the last in that data range
 sampling = {
@@ -191,7 +213,7 @@ sampling = {
 }
 
 # Could have just done this
-# data_merged.resample(rule="200ms").apply(sampling).dropna()
+# data_resampled = data_merged.resample(rule="200ms").apply(sampling).dropna()
 
 # Split by day (n -> day timeframes, g -> df group)
 days = [g for n, g in data_merged.groupby(pd.Grouper(freq="D"))]
@@ -199,7 +221,13 @@ data_resampled = pd.concat(
     [df.resample(rule="200ms").apply(sampling).dropna() for df in days]
 )
 
-data_resampled.info()  # change set from float64 to int
+
+# data_merged[:100].resample(rule="S").mean()
+# data_merged.resample(rule="200ms").mean()  # 5 measurements per second
+
+data_resampled[data_resampled["set"] == 1]
+sorted(data_resampled["set"].unique())
+
 data_resampled["set"] = data_resampled["set"].astype("int")
 
 # --------------------------------------------------------------
