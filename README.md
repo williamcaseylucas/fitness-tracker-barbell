@@ -6,7 +6,20 @@ Template for structuring your Python data science projects. It is based on [Cook
 
 ## Notes
 
-* Better to export pickle if you are using df later so date time stuff is preserved
+- Better to export pickle if you are using df later so date time stuff is preserved
+
+### Outlier Detection (IQR, Chauvenet, LOF)
+
+- Better to grab exercises by label first, then apply outlier detection through boxplots, calculating IQR values, and plotting them via 'groupby'
+- How to test for normal distribtuion -> boxplot has whiskers that are approx similar or histogram with bell shaped curve
+- Chauvenet's Criterion -> Detects outliers, assumes normal distribtution
+  - Rest data is the only one that does not look normally distributed
+- IQR can sometimes be useful, sometimes Chauvenet's can be good if normal distribution is assumed
+- Local Outlier Factor
+  - Distance based
+  - Unsupervized learning approach
+  - Uses density of clusters with KNN to determine outliers
+  - Can identify outliers within data itself using this approach
 
 ## Data
 
