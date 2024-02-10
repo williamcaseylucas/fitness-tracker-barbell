@@ -15,7 +15,9 @@ from sklearn.svm import LinearSVC
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn import tree
-from sklearn.naive_bayes import GaussianNB
+from sklearn.naive_bayes import (
+    GaussianNB,
+)  # Good for continuous, others are Bernouli (0 and 1) and Multinomial (more than 0, 1 classification)
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score

@@ -210,11 +210,11 @@ df_freq = pd.concat(df_freq_list).set_index("epoch (ms)", drop=True)
 # Dealing with overlapping windows
 # --------------------------------------------------------------
 
+
 df_freq.isnull().sum()
 df_freq.info()
 
 df_freq.dropna(inplace=True)
-any(val == 0 for val in list(df_freq.isnull().sum()))  # check no more null
 
 # Skip every other row -> Important for windows to avoid overfitting
 df_freq = df_freq.iloc[::2]
@@ -228,7 +228,6 @@ df_cluster = df_freq.copy()
 cluster_columns = ["acc_x", "acc_y", "acc_z"]
 k_values = range(2, 10)
 inertias = []
-
 
 for k in k_values:
     subset = df_cluster[cluster_columns]
