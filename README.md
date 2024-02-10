@@ -6,7 +6,15 @@ Template for structuring your Python data science projects. It is based on [Cook
 
 ## Notes
 
-- Better to export pickle if you are using df later so date time stuff is preserved
+Better to export pickle if you are using df later so date time stuff is preserved
+
+Filter subtle noise (not outliers) and identify parts of data that explain most of the variance
+
+Add termporal, frequency, and cluster features
+
+### Feature Engineering
+
+- Can drop bad rows, or use imputation (mean, median, min, max between two values, or interpolate)
 
 ### Outlier Detection (IQR, Chauvenet, LOF)
 
