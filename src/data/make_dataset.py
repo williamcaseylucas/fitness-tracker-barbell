@@ -94,7 +94,6 @@ del gyro_df["elapsed (s)"]
 files = glob("../../data/raw/MetaMotion/*.csv")
 data_path = "../../data/raw/MetaMotion/"
 
-
 def read_data_from_files(files):
     acc_df = pd.DataFrame()
     gyro_df = pd.DataFrame()
@@ -144,27 +143,24 @@ acc_df, gyro_df = read_data_from_files(files)
 # Merging datasets
 # --------------------------------------------------------------
 
-set1 = pd.concat([acc_df.iloc[:, :3], gyro_df], axis=1)
-set2 = pd.concat([acc_df, gyro_df.iloc[:, :3]], axis=1)
+# set1 = pd.concat([acc_df.iloc[:, :3], gyro_df], axis=1)
+# set2 = pd.concat([acc_df, gyro_df.iloc[:, :3]], axis=1)
 
-set1 = set1[["set"]]
-set2 = set2[["set"]]
+# c1 = set1.count()
+# c2 = set2.count()
 
-c1 = set1.count()
-c2 = set2.count()
+# c1 + c2
 
-c1 + c2
-
-merged_label = set1.combine_first(set2)
-merged_label.count()
+# set1.combine
+# merged_label = set1.combine_first(set2)
+# merged_label.count()
 
 # We don't need participant, label, category, and set to be duplicated
 
-
 data_merged = pd.concat([acc_df.iloc[:, :3], gyro_df], axis=1)
-data_merged["set"] = merged_label
+# data_merged["set"] = merged_label
 
-data_merged["set"].count()  # Good!
+# data_merged["set"].count()  # Good!
 
 # -- Doesn't work the same, get fewer rows and lose datetime --
 # pd.merge(
@@ -212,6 +208,20 @@ sampling = {
     "set": "last",
 }
 
+# delta = (
+#     data_merged[data_merged["set"] == 1].index[-1]
+#     - data_merged[data_merged["set"] == 1].index[0]
+# )
+# acc_delta = acc_df[acc_df["set"] == 1].index[-1] - acc_df[acc_df["set"] == 1].index[0]
+# gyr_delta = (
+#     gyro_df[gyro_df["set"] == 1].index[-1] - gyro_df[gyro_df["set"] == 1].index[0]
+# )
+
+
+# data_merged[data_merged["set"] == 1].resample(rule="200ms").apply(
+#     sampling
+# ).isnull().sum()
+
 # Could have just done this
 # data_resampled = data_merged.resample(rule="200ms").apply(sampling).dropna()
 
@@ -220,7 +230,6 @@ days = [g for n, g in data_merged.groupby(pd.Grouper(freq="D"))]
 data_resampled = pd.concat(
     [df.resample(rule="200ms").apply(sampling).dropna() for df in days]
 )
-
 
 # data_merged[:100].resample(rule="S").mean()
 # data_merged.resample(rule="200ms").mean()  # 5 measurements per second

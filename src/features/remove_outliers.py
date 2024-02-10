@@ -297,3 +297,6 @@ for col in outlier_columns:
 # --------------------------------------------------------------
 
 outliers_removed_df.to_pickle("../../data/interim/02_outliers_removed_chauvenets.pkl")
+
+
+

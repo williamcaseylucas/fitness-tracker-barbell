@@ -15,6 +15,32 @@ Add termporal, frequency, and cluster features
 ### Feature Engineering
 
 - Can drop bad rows, or use imputation (mean, median, min, max between two values, or interpolate)
+- Used Butterworth lowpass filter
+  - Frequency is 1000/200 since 1000 ms is 1 second and 200ms was the rate we we resampled at
+  - cutoff -> higher the number, more angles present, lower the number, smoother the curves
+  - Used to remove high frequency noise from a dataset
+  - Removes any data points above a certain threshold frequency, while still preserving the underlying pattern of the data
+- PCA
+  - Passing in first six columns into PCA method and then using the 'elbow' method to analyze
+  - Elbow occurred at 3 labels
+  - Captured 6 columns into three while capturing as much of the variance as possible
+- Sum of squares (magnitude)
+  - Direction is impartial to device orientation and can handle dynamic re-orientations
+- Fourier Transformation
+  - Measurements to be represented by sinusoid functions with different frequencies
+  - Data can be represented as frequency components
+  - Provides insights into patterns and trends that may otherwise not have been visible
+  - DFT (Discrete Fourier Transformation) can help reduce noise allowing for more accurate models
+- Temporal Abstraction
+  - Using a rolling window walking over our data to compute, over a window size, the average and standard deviation
+  - Will use mean and standard deviation
+- Windows
+  - For windows, we skipped every other column to avoid overfitting due to aggregated new values in our windows
+- Clustering
+  - KMeans can use elbow method as well
+  - Cluster 0 combines bench press and overhead press
+  - ![image info](./src/visualization/kmeans_clusters.png)
+  - ![image info](./src/visualization/kmeans_labels.png)
 
 ### Outlier Detection (IQR, Chauvenet, LOF)
 
