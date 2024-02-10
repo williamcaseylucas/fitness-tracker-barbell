@@ -13,7 +13,7 @@ df = pd.read_pickle("../../data/interim/01_data_processed.pkl")
 # Plot single columns
 # --------------------------------------------------------------
 
-set_df = df[df["set"] == 1]
+set_df = df[df["set"] == 5]
 
 # With time series
 plt.plot(set_df["acc_y"])

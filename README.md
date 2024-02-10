@@ -12,62 +12,6 @@ Filter subtle noise (not outliers) and identify parts of data that explain most 
 
 Add termporal, frequency, and cluster features
 
-### Feature Engineering
-
-- Can drop bad rows, or use imputation (mean, median, min, max between two values, or interpolate)
-- Used Butterworth lowpass filter
-
-  - Frequency is 1000/200 since 1000 ms is 1 second and 200ms was the rate we we resampled at
-  - cutoff -> higher the number, more angles present, lower the number, smoother the curves
-  - Used to remove high frequency noise from a dataset
-  - Removes any data points above a certain threshold frequency, while still preserving the underlying pattern of the data
-- PCA
-
-  - Passing in first six columns into PCA method and then using the 'elbow' method to analyze
-  - Elbow occurred at 3 labels
-  - Captured 6 columns into three while capturing as much of the variance as possible
-- Sum of squares (magnitude)
-
-  - Direction is impartial to device orientation and can handle dynamic re-orientations
-- Fourier Transformation
-
-  - Measurements to be represented by sinusoid functions with different frequencies
-  - Data can be represented as frequency components
-  - Provides insights into patterns and trends that may otherwise not have been visible
-  - DFT (Discrete Fourier Transformation) can help reduce noise allowing for more accurate models
-- Temporal Abstraction
-
-  - Using a rolling window walking over our data to compute, over a window size, the average and standard deviation
-  - Will use mean and standard deviation
-- Windows
-
-  - For windows, we skipped every other column to avoid overfitting due to aggregated new values in our windows
-- Clustering
-
-  - KMeans can use elbow method as well
-  - Cluster 0 combines bench press and overhead press
-  - ![KMeans Clusters Visualization](./src/visualization/kmeans_clusters.png)
-  - ![KMeans Labels Visualization](./src/visualization/kmeans_labels.png)
-
-  ## Training
-
-
-  - Basic Features
-    Square Features
-    PCA Features
-    Time Features
-    Frequency Features
-    Cluster Features
-  - ![Feature Importance w/ Accuracy](./src/visualization/accuracy_with_features.png)
-  - Use grid search and K-fold cross validation
-  - What Barchart tells us
-    - ![Feature Set Accuracies](./src/visualization/featuresets_accuracy_barchart.png)
-    - Feature set 4 is almost the best for all of the models which includes all of our features
-    - The selected features compare better in all of the cases compared to feature set 1 and feature set 2
-  - Use Confusion matrix to highlight what best performing model looks like
-    - ![Confusion Matrix](./src/visualization/confusion_matrix.png)
-    - Window aspect may be contributing to some of the error since some of this training looks similar
-
 ### Outlier Detection (IQR, Chauvenet, LOF)
 
 - Better to grab exercises by label first, then apply outlier detection through boxplots, calculating IQR values, and plotting them via 'groupby'
@@ -110,4 +54,97 @@ Add termporal, frequency, and cluster features
 - Adding 'set' to each df so that we don't have to group by category, label, and participant later
 - Epochs -> Unit Time
   - Time since Jan 1, 1970
-  -
+- #### Visuals
+  ##### Comparing Participants
+  - ![Comparing Participants](./reports/figures/subset_comparing_participants.png)
+  ##### x, y, z accel. data for participant
+  - ![x, y, z accel. data for participant](./reports/figures/xyz_for_participant.png)
+  ##### Medium vs Heavy Set
+  - ![Medium vs Heavy Set](./reports/figures/medium_vs_heavy.png)
+
+### Feature Engineering
+
+- Can drop bad rows, or use imputation (mean, median, min, max between two values, or interpolate)
+- Used Butterworth lowpass filter
+
+  - Frequency is 1000/200 since 1000 ms is 1 second and 200ms was the rate we we resampled at
+  - cutoff -> higher the number, more angles present, lower the number, smoother the curves
+  - Used to remove high frequency noise from a dataset
+  - Removes any data points above a certain threshold frequency, while still preserving the underlying pattern of the data
+
+- PCA
+
+  - Passing in first six columns into PCA method and then using the 'elbow' method to analyze
+  - Elbow occurred at 3 labels
+  - Captured 6 columns into three while capturing as much of the variance as possible
+
+- Sum of squares (magnitude)
+
+  - Direction is impartial to device orientation and can handle dynamic re-orientations
+
+- Fourier Transformation
+
+  - Measurements to be represented by sinusoid functions with different frequencies
+  - Data can be represented as frequency components
+  - Provides insights into patterns and trends that may otherwise not have been visible
+  - DFT (Discrete Fourier Transformation) can help reduce noise allowing for more accurate models
+
+- Temporal Abstraction
+
+  - Using a rolling window walking over our data to compute, over a window size, the average and standard deviation
+  - Will use mean and standard deviation
+
+- Windows
+
+  - For windows, we skipped every other column to avoid overfitting due to aggregated new values in our windows
+
+- Clustering
+
+  - KMeans can use elbow method as well
+  - Cluster 0 combines bench press and overhead press
+
+  ##### KMeans Clusters Visualization
+
+  - ![KMeans Clusters Visualization](./reports/figures/kmeans_clusters.png)
+
+  ##### KMeans Labels Visualization
+
+  - ![KMeans Labels Visualization](./reports/figures/kmeans_labels.png)
+
+  ## Training
+
+  - Basic Features
+    Square Features
+    PCA Features
+    Time Features
+    Frequency Features
+    Cluster Features
+
+  ##### Feature Importance w/ Accuracy
+
+  - ![Feature Importance w/ Accuracy](./reports/figures/accuracy_with_features.png)
+  - Use grid search and K-fold cross validation
+  - What Barchart tells us
+    ##### Feature Set Accuracies
+    - ![Feature Set Accuracies](./reports/figures/featuresets_accuracy_barchart.png)
+    - Feature set 4 is almost the best for all of the models which includes all of our features
+    - The selected features compare better in all of the cases compared to feature set 1 and feature set 2
+  - Use Confusion matrix to highlight what best performing model looks like
+    ##### Confusion Matrix
+    - ![Confusion Matrix](./reports/figures/confusion_matrix.png)
+    - Window aspect may be contributing to some of the error since some of this training looks similar
+
+### Counting Repetitions
+
+- Heavy -> 5 repetitions per set
+- Medium -> 10 repetitions per set
+- After applying filter to count repetitions, we can see the peaks of 'acc_y' are of interest
+  ##### Without lowpass filter
+  - ![Without lowpass filter](./reports/figures/without_lowpass_filter.png)
+  ##### With lowpass filter
+  - ![With lowpass filter](./reports/figures/with_lowpass_filter.png)
+- Use argrelextrema to find relative extrema which will tell us our peaks
+- MAE
+  ##### Mean Average Error for Counts
+  - ![MAE](./reports/figures/mae_of_miscategorizations.png)
+  - To improve, isolate each exercise, create a specific model for each of them and tweak 'order' parameter along with others to get as exact as possible
